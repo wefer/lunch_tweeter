@@ -37,7 +37,7 @@ def get_konigs_menu(day):
 def main():
 
 	current_day = datetime.datetime.today().weekday()
-	tweeter.tweet("dagens_lunch", get_konigs_menu(current_day), "/path_to_config_file/")
+	tweeter.tweet("/path_to_config_file/", "dagens_lunch", get_konigs_menu(current_day))
 
 if __name__ == "__main__":
 	main()
