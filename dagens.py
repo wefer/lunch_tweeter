@@ -5,7 +5,7 @@
 import urllib2
 import re
 import datetime
-import tweeter
+import tweet
 
 def get_content(url):
 	req = urllib2.Request(url)
@@ -37,7 +37,7 @@ def get_konigs_menu(day):
 def main():
 
 	current_day = datetime.datetime.today().weekday()
-	tweeter.tweet("/path_to_config_file/", "dagens_lunch", get_konigs_menu(current_day))
+	tweet.tweet("/path_to_config_file/", "dagens_lunch", get_konigs_menu(current_day))
 
 if __name__ == "__main__":
 	main()
