@@ -31,12 +31,22 @@ def tweet(conf, user, message):
 	if len(message) < 140:
 		#post message
 		api.direct_messages.new(user=user, text=message)
+
 	else:
 		#split message into chunks
 		short_messages = []
-		chunks = message.split('\n')
-		mess = ""
-		while len(mess) < 140: 
+		paragraphs = message.split('\n')
+		word = ""
+		for item in paragraphs:
+			if len(word+item) < 140:
+				word += item
+
+			elif paragraphs.index(item) == len(paragraphs) - 1:
+				short_messages.append(word)
+
+			else:
+				short_messages.append(word)
+				word = item
 
 		for item im short_messages[::-1]:
 			api.direct_messages.new(user=user, text=item)
