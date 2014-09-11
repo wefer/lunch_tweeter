@@ -43,8 +43,8 @@ def get_konigs_menu(day):
 def main():
 
 	current_day = datetime.datetime.today().weekday()
-	tweet.tweet("/home/hw/work/lunch_tweeter/tw.yaml",  get_konigs_menu(current_day))
-	tweet.tweet("/home/hw/work/lunch_tweeter/tw.yaml", get_nanna_menu(current_day))
+	tweet.tweet("/path/to/config.yaml",  get_konigs_menu(current_day))
+	tweet.tweet("/path/to/config.yaml", get_nanna_menu(current_day))
 if __name__ == "__main__":
 	main()
 
