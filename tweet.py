@@ -21,16 +21,22 @@ def get_twitter_auth(config_file):
 	
 	return api
 
-def tweet(conf, user, message):
+def tweet(conf, info):
 	"""
 	Tweet messages after splitting them into chunks if necessary
 	"""
+	name = info[0]
+	day = info[1]
+	message = info[2]
+	spacer = '-' * 30
+	header = "%s: %s\n%s" % (name, day, spacer)
+
 	# Get API-object 
 	api = get_twitter_auth(conf)
 	
 	if len(message) < 140:
 		#post message
-		api.direct_messages.new(user=user, text=message)
+		api.statuses.update(status=message)
 
 	else:
 		#split message into chunks
@@ -51,9 +57,9 @@ def tweet(conf, user, message):
 
                           short_messages.append(word)
 
+		for item in short_messages[::-1]:
+			api.statuses.update(status=item)
 
-		for item im short_messages[::-1]:
-
-			api.direct_messages.new(user=user, text=item)
+		api.statuses.update(status=header)
 
 	return 0
