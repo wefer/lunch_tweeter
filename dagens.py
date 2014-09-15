@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-
+from bs4 import BeautifulSoup
 import urllib2
 import re
 import datetime
@@ -13,19 +13,36 @@ def get_content(url):
 	page_content = response.read()
 	return page_content
 
-
-
 def get_nanna_menu(day):
-	page_content = get_content('http://restaurang-ns.com/restaurang-nanna-svartz/')
+        page_content = get_content('http://restaurang-ns.com/restaurang-nanna-svartz/')
 
-	rest_name = "NANNA SVARTZ"
+        rest_name = "NANNA SVARTZ"
 
-	weekdays = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag']
-	weekday = weekdays[day]
+        soup = BeautifulSoup(page_content)
 
-	menu = '\n'.join([x.split('<')[0] for x in re.findall(weekdays[day]+'(.*?)<strong>', page_content, re.DOTALL|re.M)[0].split('<p>')[1:-2]])
+        weekdays = [ "Måndag", "Tisdag", "Onsdag", "Torsdag", "Fredag" ]
 
-	return [rest_name, weekday, menu]
+        d = { "Måndag" : [], "Tisdag" : [], "Onsdag" : [], "Torsdag" : [], "Fredag" : [] }
+
+        curr_key = None
+
+        for line in soup.findAll("div", {"class" : "span6"})[0].text.split('\n'):
+                d_flag = 0 
+                for key in d.keys():
+                        if key.decode('utf-8') in line:
+                                curr_key = key 
+                                d_flag = 1 
+                if not curr_key:
+                        continue
+                else:
+                        if d_flag != 1:
+                                d[curr_key].append(line)
+
+        weekday = weekdays[day]
+        menu = '\n'. join(d[weekday]).rstrip()
+    
+        return [rest_name, weekday, menu]
+
 
 def get_konigs_menu(day):
 	page_content = get_content('http://restaurangkonigs.se')
@@ -43,8 +60,8 @@ def get_konigs_menu(day):
 def main():
 
 	current_day = datetime.datetime.today().weekday()
-	tweet.tweet("/path/to/config.yaml",  get_konigs_menu(current_day))
-	tweet.tweet("/path/to/config.yaml", get_nanna_menu(current_day))
+	tweet.tweet("/home/hugo/lunch_tweeter/tw.yaml",  get_konigs_menu(current_day))
+	tweet.tweet("/home/hugo/lunch_tweeter/tw.yaml", get_nanna_menu(current_day))
 if __name__ == "__main__":
 	main()
 
